@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jirani Airbnbs</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+    <meta name="description"
+        content="Discover unique homes and experiences with Jirani Airbnb. Book your next stay today.">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.7);
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #333;
+            transition: background 0.2s;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .carousel-btn.prev {
+            left: 10px;
+        }
+
+        .carousel-btn.next {
+            right: 10px;
+        }
+
+        /* Detail Modal Styles */
+        .detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            overflow-y: auto;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .detail-modal.open {
+            display: flex;
+        }
+
+        .detail-content {
+            background: white;
+            width: 100%;
+            max-width: 900px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            position: relative;
+            margin-top: 40px;
+        }
+
+        .detail-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 10;
+            color: #333;
+            line-height: 1;
+        }
+
+        .detail-gallery {
+            width: 100%;
+            height: 400px;
+            background: #eee;
+            position: relative;
+        }
+
+        .detail-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .detail-info {
+            padding: 30px;
+        }
+
+        .detail-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .detail-meta {
+            display: flex;
+            gap: 15px;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .detail-description {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .detail-amenities {
+            margin-bottom: 30px;
+        }
+
+        .detail-amenities h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .detail-amenities ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .detail-amenities li {
+            background: #f5f5f5;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .detail-price-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .detail-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container header__container">
+            <a href="index.html" class="logo">Jirani<span class="logo__accent">Airbnb</span></a>
+            <nav class="nav">
+                <ul class="nav__list">
+                    <li class="nav__item"><a href="index.html" class="nav__link">Home</a></li>
+                    <li class="nav__item"><a href="#properties" class="nav__link">Stays</a></li>
+                    <li class="nav__item"><a href="#experiences" class="nav__link">Experiences</a></li>
+                    <li class="nav__item"><a href="contact.html" class="nav__link">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="header__actions">
+                <a href="login.html" class="btn btn--secondary">Log in</a>
+                <a href="#" class="btn btn--primary">Sign up</a>
+            </div>
+            <button class="menu-toggle" aria-label="Toggle menu">
+                <span class="menu-toggle__bar"></span>
+                <span class="menu-toggle__bar"></span>
+                <span class="menu-toggle__bar"></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero__container">
+                <div class="hero__content">
+                    <h1 class="hero__title">Find your next <br>stay with Jirani</h1>
+                    <p class="hero__subtitle">Discover unique homes and unforgettable experiences tailored just for you.
+                    </p>
+                </div>
+                <div class="search-bar">
+                    <form class="search-form">
+                        <div class="search-form__field">
+                            <label for="location">Location</label>
+                            <input type="text" id="location" placeholder="Where are you going?">
+                        </div>
+                        <div class="search-form__field">
+                            <label for="check-in">Check in</label>
+                            <input type="date" id="check-in">
+                        </div>
+                        <div class="search-form__field">
+                            <label for="check-out">Check out</label>
+                            <input type="date" id="check-out">
+                        </div>
+                        <div class="search-form__field">
+                            <label for="rooms">No of rooms</label>
+                            <select id="rooms"
+                                style="border:none; width:100%; color:var(--color-text-secondary); font-size:0.875rem; outline:none; background:transparent;">
+                                <option value="">Any</option>
+                                <option value="studio">Studio</option>
+                                <option value="1">1 Bedroom</option>
+                                <option value="2">2 Bedrooms</option>
+                                <option value="3">3 Bedrooms</option>
+                                <option value="4">4 Bedrooms</option>
+                                <option value="5">5 Bedrooms</option>
+                                <option value="6">6 Bedrooms</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn--primary search-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-search">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="featured" id="properties">
+            <div class="container">
+                <h2 class="section-title">Inspiration for your next trip</h2>
+                <div class="property-grid" id="airbnb-grid">
+                    <!-- Loaded via JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="detail-modal" onclick="closeDetailModal(event)">
+        <div class="detail-content" onclick="event.stopPropagation()">
+            <button class="detail-close" onclick="closeDetailModal()">&times;</button>
+            <div id="modal-gallery" class="detail-gallery">
+                <!-- Gallery content -->
+            </div>
+            <div class="detail-info">
+                <h2 id="modal-title" class="detail-title">Title</h2>
+                <div class="detail-meta">
+                    <span id="modal-location">Location</span> &bull;
+                    <span id="modal-rating">Rating</span>
+                </div>
+                <div id="modal-desc" class="detail-description">Description</div>
+                <div class="detail-amenities">
+                    <h4>What this place offers</h4>
+                    <ul id="modal-amenities">
+                        <!-- Amenities list -->
+                    </ul>
+                </div>
+                <div class="detail-price-box">
+                    <div class="detail-price">KES <span id="modal-price">100</span> <span
+                            style="font-size:1rem; font-weight:400; color:#666;">night</span></div>
+                    <a href="contact.html" class="btn btn--primary" onclick="closeDetailModal()">Reserve</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Jirani Airbnb. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        function openDetailModal(id) {
+            const items = JiraniData.getAirbnbs();
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('modal-title').innerText = item.title;
+            document.getElementById('modal-location').innerText = item.location.charAt(0).toUpperCase() + item.location.slice(1);
+            document.getElementById('modal-rating').innerText = `★ ${item.rating}`;
+            document.getElementById('modal-desc').innerText = `${item.desc}. This beautiful listing in ${item.location} offers a comfortable stay with modern amenities. Perfect for travelers looking for an authentic experience.`;
+            document.getElementById('modal-price').innerText = item.price;
+
+            // Amenities
+            const amList = document.getElementById('modal-amenities');
+            amList.innerHTML = '';
+            if (item.amenities) {
+                item.amenities.split(',').forEach(am => {
+                    const li = document.createElement('li');
+                    li.innerText = am.trim();
+                    amList.appendChild(li);
+                });
+            } else {
+                amList.innerHTML = '<li>Essentials</li><li>Wifi</li>';
+            }
+
+            // Gallery
+            let images = item.images || (item.image ? [item.image] : []);
+            let imageHtml = '';
+            const carouselId = `modal-carousel`;
+            if (images.length > 0) {
+                imageHtml = `<div id="${carouselId}" class="image-carousel" style="display: flex; overflow-x: auto; scroll-snap-type: x mandatory; height: 100%; width: 100%; scrollbar-width: none;">`;
+                images.forEach(img => {
+                    imageHtml += `<img src="${img}" style="min-width: 100%; height: 100%; object-fit: cover; scroll-snap-align: start;">`;
+                });
+                imageHtml += `</div>`;
+
+                if (images.length > 1) {
+                    imageHtml += `
+                        <button class="carousel-btn prev" onclick="event.stopPropagation(); scrollCarousel('${carouselId}', -1)">&#10094;</button>
+                        <button class="carousel-btn next" onclick="event.stopPropagation(); scrollCarousel('${carouselId}', 1)">&#10095;</button>
+                    `;
+                }
+            } else {
+                imageHtml = `<div style="width:100%; height:100%; background:${item.imageColor || '#ddd'}; display:flex; align-items:center; justify-content:center; color:#666;">No Photos Available</div>`;
+            }
+            document.getElementById('modal-gallery').innerHTML = imageHtml;
+
+            document.getElementById('detail-modal').classList.add('open');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        }
+
+        function closeDetailModal(e) {
+            if (e && e.target !== document.getElementById('detail-modal')) return; // handled by stopPropagation on content
+            document.getElementById('detail-modal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    </script>
+</body>
+
+</html>
